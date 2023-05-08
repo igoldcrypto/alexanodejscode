@@ -10,9 +10,9 @@ const { CountMyLeftRightDirects } = require("../controllers/CountMyLeftRightDire
 
 const router = express.Router();
 
-router.post("/dailyBonus", homes)
-router.post("/matchiingBonus", MatchingBonus)
-router.post("/globalBonusMonthly", GlobalBonusMonthly)
+router.get("/dailyBonus", homes)
+router.get("/matchiingBonus", MatchingBonus)
+router.get("/globalBonusMonthly", GlobalBonusMonthly)
 router.post("/ClaimRankEligibility", ClaimRankEligibility)
 router.post("/CountMyTeam", CountMyTeam)
 router.post("/CountMyLeftRightDirects", CountMyLeftRightDirects)
