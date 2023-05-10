@@ -75,7 +75,7 @@ exports.MatchingBonus = async (req, res) => {
         var checkIfUserAlreadyOwnAnyMatchingBonus = await MatchingBonusHistory.findOne({ BonusOwner: FindAllUsers[index]._id })
 
 
-        const FindMainUserPackage = await PackageHistory.findOne({ PackageOwner: FindAllUsers[index]._id, createdAt: { $gte: new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000))) } })
+        const FindMainUserPackage = await PackageHistory.findOne({ PackageOwner: FindAllUsers[index]._id, createdAt: { $gte: new Date((new Date().getTime() - ( 45 * 60 * 1000))) } })
 
 
         if (FindMainUserPackage && FindMainUserPackage.Type2 == "Repurchased") {
@@ -125,11 +125,11 @@ exports.MatchingBonus = async (req, res) => {
                     }
                 }
 
-                console.log("LeftWall => " + LeftWall)
-                console.log("RightWall => " + RightWall)
+                
+                
                 if (LeftWall >= Number(PackPrice) && RightWall >= Number(PackPrice)) {
 
-                    console.log("he is satisfying this block")
+                    
 
 
                         // const findThisUserData = await User.findById(FindAllUsers[index]._id)
@@ -157,10 +157,12 @@ exports.MatchingBonus = async (req, res) => {
 
                     } else if (rightBusiness < leftBusiness) {
 
+
                         combo = Number(rightBusiness) + Number(subLastValue)
                         var subtractForwardValue = leftBusiness - rightBusiness
 
                     } else if (rightBusiness == leftBusiness) {
+
 
                         combo = Number(rightBusiness)
                         var subtractForwardValue = 0
@@ -216,7 +218,7 @@ exports.MatchingBonus = async (req, res) => {
 
                 } else {
 
-                    console.log("Not Eligibal For Matching")
+                    
 
                 }
             }
@@ -229,14 +231,14 @@ exports.MatchingBonus = async (req, res) => {
 
         } else {
 
-            console.log("came in this")
-
-
+            
             if (FindMainUserPackage !== null) {
 
                 if (checkIfUserAlreadyOwnAnyMatchingBonus !== null) {
+                    var SelectSide = checkIfUserAlreadyOwnAnyMatchingBonus.SubtractedFrom
                     var subLastValue = Number(checkIfUserAlreadyOwnAnyMatchingBonus.ForwardedValue)
                 } else {
+                    var SelectSide = "Left"
                     var subLastValue = 0
                 }
 
@@ -268,12 +270,20 @@ exports.MatchingBonus = async (req, res) => {
                         }
                     }
                 }
-
+                
+                
                 if (LeftWall >= Number(PackPrice) && RightWall >= Number(PackPrice)) {
-
-
-
-
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                
 
 
 
@@ -288,12 +298,20 @@ exports.MatchingBonus = async (req, res) => {
 
                     const currentUserBussiness = await findTotalBussiness(FindAllUsers[index]._id, totalBussinessCache);
 
-                    // 
 
-
-
-                    let leftBusiness = currentUserBussiness.data.leftIncome
+                    let leftBusiness = currentUserBussiness.data.leftIncome 
                     let rightBusiness = currentUserBussiness.data.rightIncome
+
+
+                    console.log("subLastValue => "+subLastValue)
+
+                    if (SelectSide == "Left") {
+                        leftBusiness = Number(leftBusiness) + Number(subLastValue)
+
+                    }else{
+                        rightBusiness = Number(rightBusiness) + Number(subLastValue)
+
+                    }
 
 
 
@@ -309,23 +327,49 @@ exports.MatchingBonus = async (req, res) => {
 
                         if (leftBusiness < rightBusiness) {
 
-
-
-
-                            combo = Number(leftBusiness) + Number(subLastValue)
+                            
+                            
+                          
+                                    
+                            combo = Number(leftBusiness)
                             var subtractForwardValue = rightBusiness - leftBusiness
+
+                            var subtracted_From_Which_Side = "Right"
+
+                            
+                            
+                            
+
+
 
                         } else if (rightBusiness < leftBusiness) {
 
+                            
+                            combo = Number(rightBusiness) 
+                            
+                            // combo = Number(rightBusiness) + Number(subLastValue)
 
-                            combo = Number(rightBusiness) + Number(subLastValue)
+                            // if (SelectSide == "Left") {
+                                
+                            //     combo = Number(leftBusiness) + Number(subLastValue)
+                            //     subLastValue = 0
+                                
+                            // }else{
+                                
+                            //     subLastValue = 0
+
+                            // }
                             var subtractForwardValue = leftBusiness - rightBusiness
-
+                            var subtracted_From_Which_Side = "Left"
+                            
                         } else if (rightBusiness == leftBusiness) {
-
+                            
+                            
 
                             combo = Number(rightBusiness)
                             var subtractForwardValue = 0
+                            var subtracted_From_Which_Side = "Left"
+
 
                         }
 
@@ -342,9 +386,15 @@ exports.MatchingBonus = async (req, res) => {
                             Amount: packPercantage,
                             Matching: combo,
                             Rate: "8%",
-                            ForwardedValue: subtractForwardValue
+                            ForwardedValue: subtractForwardValue,
+                            SubtractedFrom: subtracted_From_Which_Side
                         }).save()
 
+
+
+                        /*
+                        ! SHORT RECORD WORK GOING ON BELOW
+                        */
 
                         const findShortRecord = await ShortRecord.findOne({ RecordOwner: FindAllUsers[index]._id })
 

@@ -21,12 +21,17 @@ const MatchingBonusHistory = mongoose.Schema({
     ForwardedValue:{
         default: 'null',
         type: 'String'
-    }
+    },
+    SubtractedFrom:{
+        default: 'null',
+        type: 'String'
+    },
+    
 },
     {
         timestamps: true
     })
 
-module.exports = mongoose.model("MatchingBonusHistoryy", MatchingBonusHistory);
+module.exports = mongoose.model("MatchingBonusHistoryym", MatchingBonusHistory);
 
 // export default mongoose.models.MatchingBonusHistoryy || mongoose.model('MatchingBonusHistoryy', MatchingBonusHistory)
