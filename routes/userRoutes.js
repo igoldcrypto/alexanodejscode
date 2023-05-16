@@ -1,6 +1,8 @@
 const express = require("express")
 const { homes } = require("../controllers/DailyReward")
 const { MatchingBonus } = require("../controllers/MatchingBonus")
+const { NewMatchingBonus } = require("../controllers/NewMatchingBonus")
+
 const { GlobalBonusMonthly } = require("../controllers/GlobalBonusMonthly")
 const { ClaimRankEligibility } = require("../controllers/ClaimRankEligibility")
 const { CountMyTeam } = require("../controllers/CountMyTeam")
@@ -12,6 +14,7 @@ const router = express.Router();
 
 router.get("/dailyBonus", homes)
 router.get("/matchiingBonus", MatchingBonus)
+router.get("/NewMatchingBonus", NewMatchingBonus)
 router.get("/globalBonusMonthly", GlobalBonusMonthly)
 router.post("/ClaimRankEligibility", ClaimRankEligibility)
 router.post("/CountMyTeam", CountMyTeam)
