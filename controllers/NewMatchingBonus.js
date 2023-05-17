@@ -3,7 +3,6 @@ const User = require("../Models/User")
 const MatchingBonusHistory = require("../Models/History/MatchingBonusHistory")
 const ShortRecord = require("../Models/ShortRecord")
 
-
 exports.NewMatchingBonus = async (req, res) => {
 
     const Matching_Bonus_History_Array = [];
@@ -91,8 +90,15 @@ exports.NewMatchingBonus = async (req, res) => {
 
 
             if (Check_If_User_Already_Own_Any_Matching_Bonus.length > 0) {
-                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[0].SubtractedFrom
-                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[0].ForwardedValue)
+                // var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[0].SubtractedFrom
+                // var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[0].ForwardedValue)
+
+                const getArrayLenght = Check_If_User_Already_Own_Any_Matching_Bonus.length
+
+                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].SubtractedFrom
+                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].ForwardedValue)
+            
+            
             } else {
                 var SelectSide = "Left"
                 var subLastValue = 0
@@ -104,6 +110,8 @@ exports.NewMatchingBonus = async (req, res) => {
                 UpperlineUser: User_Item._id,
                 createdAt: { $gte: new Date(Find_If_User_Have_Package[0].createdAt) }
             })
+
+            
 
             if (Find_User_Directs.length !== 0) {
 
@@ -137,6 +145,11 @@ exports.NewMatchingBonus = async (req, res) => {
 
 
                     if (SelectSide == "Left") {
+
+                        
+                        
+                        
+
                         leftBusiness = Number(leftBusiness) + Number(subLastValue)
                     } else {
                         rightBusiness = Number(rightBusiness) + Number(subLastValue)
@@ -246,15 +259,16 @@ exports.NewMatchingBonus = async (req, res) => {
                 }
             }
 
-
-
-
-
         } else {
 
             if (Check_If_User_Already_Own_Any_Matching_Bonus.length > 0) {
-                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[0].SubtractedFrom
-                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[0].ForwardedValue)
+
+                const getArrayLenght = Check_If_User_Already_Own_Any_Matching_Bonus.length
+
+                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].SubtractedFrom
+                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].ForwardedValue)
+            
+            
             } else {
                 var SelectSide = "Left"
                 var subLastValue = 0
@@ -296,13 +310,14 @@ exports.NewMatchingBonus = async (req, res) => {
 
 
                     if (SelectSide == "Left") {
+                        
                         leftBusiness = Number(leftBusiness) + Number(subLastValue)
+                        
+                        
                     } else {
                         rightBusiness = Number(rightBusiness) + Number(subLastValue)
+                                             
                     }
-
-
-
 
                     if (leftBusiness >= Number(Package_Price) && rightBusiness >= Number(Package_Price)) {
 
@@ -312,12 +327,15 @@ exports.NewMatchingBonus = async (req, res) => {
                         if (leftBusiness < rightBusiness) {
 
                             combo = Number(leftBusiness)
+
                             var subtractForwardValue = rightBusiness - leftBusiness
                             var subtracted_From_Which_Side = "Right"
 
+
                         } else if (rightBusiness < leftBusiness) {
 
-                            combo = Number(rightBusiness)
+                            
+
                             var subtractForwardValue = leftBusiness - rightBusiness
                             var subtracted_From_Which_Side = "Left"
 
