@@ -1,3 +1,4 @@
+const moment = require('moment');
 const PackageHistory = require("../Models/History/PackageHistory")
 const User = require("../Models/User")
 const MatchingBonusHistory = require("../Models/History/MatchingBonusHistory")
@@ -276,7 +277,15 @@ exports.NewMatchingBonus = async (req, res) => {
 
             let Package_Price = Find_If_User_Have_Package[0].PackagePrice
 
-            const Find_User_Directs = Users.filter((e) => e.UpperlineUser == User_Item._id.toString())
+            // const Find_User_Directs = Users.filter((e) => e.UpperlineUser == User_Item._id.toString())
+
+            const Find_User_Directs = Users.filter((e) => {
+
+                const fiveMinutesAgo = moment().subtract(5, 'minutes');
+                const elementDate = moment(e.createdAt);
+
+                return elementDate.isAfter(fiveMinutesAgo);
+            }).filter((e) => e.UpperlineUser === User_Item._id.toString());
 
             if (Find_User_Directs.length !== 0) {
 
