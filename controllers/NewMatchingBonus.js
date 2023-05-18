@@ -1,10 +1,12 @@
-const moment = require('moment');
 const PackageHistory = require("../Models/History/PackageHistory")
 const User = require("../Models/User")
 const MatchingBonusHistory = require("../Models/History/MatchingBonusHistory")
 const ShortRecord = require("../Models/ShortRecord")
+const moment = require('moment');
 
 exports.NewMatchingBonus = async (req, res) => {
+
+    var updateOps = []
 
     const Matching_Bonus_History_Array = [];
 
@@ -96,10 +98,10 @@ exports.NewMatchingBonus = async (req, res) => {
 
                 const getArrayLenght = Check_If_User_Already_Own_Any_Matching_Bonus.length
 
-                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].SubtractedFrom
-                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].ForwardedValue)
-            
-            
+                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght - 1 < 0 ? 0 : getArrayLenght - 1].SubtractedFrom
+                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght - 1 < 0 ? 0 : getArrayLenght - 1].ForwardedValue)
+
+
             } else {
                 var SelectSide = "Left"
                 var subLastValue = 0
@@ -112,7 +114,7 @@ exports.NewMatchingBonus = async (req, res) => {
                 createdAt: { $gte: new Date(Find_If_User_Have_Package[0].createdAt) }
             })
 
-            
+
 
             if (Find_User_Directs.length !== 0) {
 
@@ -147,9 +149,9 @@ exports.NewMatchingBonus = async (req, res) => {
 
                     if (SelectSide == "Left") {
 
-                        
-                        
-                        
+
+
+
 
                         leftBusiness = Number(leftBusiness) + Number(subLastValue)
                     } else {
@@ -190,12 +192,6 @@ exports.NewMatchingBonus = async (req, res) => {
                         */
 
                         const Find_Short_Record = ShortRecords.filter((e) => e.RecordOwner.toString() == User_Item)
-
-
-
-
-
-
 
 
                         var packPercantage = Number(combo) * 8 / 100
@@ -266,10 +262,10 @@ exports.NewMatchingBonus = async (req, res) => {
 
                 const getArrayLenght = Check_If_User_Already_Own_Any_Matching_Bonus.length
 
-                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].SubtractedFrom
-                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght-1 < 0 ? 0 :getArrayLenght-1].ForwardedValue)
-            
-            
+                var SelectSide = Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght - 1 < 0 ? 0 : getArrayLenght - 1].SubtractedFrom
+                var subLastValue = Number(Check_If_User_Already_Own_Any_Matching_Bonus[getArrayLenght - 1 < 0 ? 0 : getArrayLenght - 1].ForwardedValue)
+
+
             } else {
                 var SelectSide = "Left"
                 var subLastValue = 0
@@ -319,13 +315,13 @@ exports.NewMatchingBonus = async (req, res) => {
 
 
                     if (SelectSide == "Left") {
-                        
+
                         leftBusiness = Number(leftBusiness) + Number(subLastValue)
-                        
-                        
+
+
                     } else {
                         rightBusiness = Number(rightBusiness) + Number(subLastValue)
-                                             
+
                     }
 
                     if (leftBusiness >= Number(Package_Price) && rightBusiness >= Number(Package_Price)) {
@@ -343,7 +339,7 @@ exports.NewMatchingBonus = async (req, res) => {
 
                         } else if (rightBusiness < leftBusiness) {
 
-                            
+
 
                             var subtractForwardValue = leftBusiness - rightBusiness
                             var subtracted_From_Which_Side = "Left"
@@ -383,7 +379,7 @@ exports.NewMatchingBonus = async (req, res) => {
                         const userWallet = Number(GiveMatchingBonus[0].MainWallet) + Number(Final_Reward)
 
 
-                        var updateOps = Users.map(({ _id, MainWallet }) => ({
+                        updateOps = Users.map(({ _id, MainWallet }) => ({
                             updateOne: {
                                 filter: { _id: _id },
                                 update: { $set: { MainWallet: userWallet } }
@@ -416,8 +412,17 @@ exports.NewMatchingBonus = async (req, res) => {
 
     }
 
-    await MatchingBonusHistory.insertMany(Matching_Bonus_History_Array)
-    await User.bulkWrite(updateOps, { ordered: false })
+    
+
+    if (Matching_Bonus_History_Array.length > 0) {
+        await MatchingBonusHistory.insertMany(Matching_Bonus_History_Array)
+    }
+
+    
+
+    if (updateOps.length > 0) {
+        await User.bulkWrite(updateOps, { ordered: false })
+    }
 
     res.json("Matching Bonus Distributed")
 
